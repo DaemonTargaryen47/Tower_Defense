@@ -148,164 +148,45 @@ def init_game():
         [(GRID_LENGTH, GRID_LENGTH), (400, 500), (250, 300), (150, 150), (0, 0)]
     ]
 
-    
-def draw_tower(x, y):
-    glPushMatrix()
-    glColor3f(99/255, 102/255, 98/255)
-    glTranslatef(x, y, 0)
-    gluCylinder(gluNewQuadric(), 30, 30, 80, 30, 30)
-    glPopMatrix()
-    
-    glPushMatrix()
-    glColor3f(0,0,0)
-    glTranslatef(x, y, 80)
-    gluCylinder(gluNewQuadric(), 30, 37, 10, 30, 30)
-    glPopMatrix()
-    
-    glPushMatrix()
-    glColor3f(161/255, 115/255, 55/255)
-    glTranslatef(x, y, 80)
-    gluCylinder(gluNewQuadric(), 37, 37, 10, 30, 30)
-    glPopMatrix()
-    
-    glPushMatrix()
-    glColor3f(99/255, 102/255, 98/255)
-    glTranslatef(x, y, 0)
-    gluCylinder(gluNewQuadric(), 50, 30, 30, 30, 30)
-    glPopMatrix()
-    
-    
-    # Base (lower cylinder)
-    glPushMatrix()
-    glColor3f(99/255, 102/255, 98/255)  # Gray base
-    glTranslatef(x, y, 0)
-    gluCylinder(gluNewQuadric(), 35, 30, 20, 30, 30)
-    glPopMatrix()
-
-    # Mid ring (dark band)
-    glPushMatrix()
-    glColor3f(0, 0, 0)  # Black ring
-    glTranslatef(x, y, 23)
-    gluCylinder(gluNewQuadric(), 33, 33, 8, 30, 30)
-    glPopMatrix()
-
-    # Inner barrel (redish center using sphere for visual)
-    glPushMatrix()
-    glColor3f(0.5, 0, 0)  # Dark red
-    glTranslatef(x, y, 5)
-    glutSolidSphere(25, 25, 20)
-    glPopMatrix()
-    
-    num_blocks = 4
-    outer_radius = 44  # Distance from center along Y-axis
-    x_offset = 20      # X offset for spacing blocks on each side
-
-    # Positions: (dx, dy) for each block
-    positions = [
-        (x_offset, outer_radius-10),   # Top right
-        (-x_offset, outer_radius-10),  # Top left
-        (x_offset, -outer_radius+10),  # Bottom right
-        (-x_offset, -outer_radius+10)  # Bottom left
-    ]
-
-    for dx, dy in positions:
-        n_x = x + dx
-        n_y = y + dy
-        # Calculate angle to face outward from the tower's center
-        angle = math.degrees(math.atan2(dy, dx))
-        
-        glPushMatrix()
-        glColor3f(0.2, 0.2, 0.2)  # Dark supports
-        glTranslatef(n_x, n_y, 0)
-        glRotatef(angle, 0, 0, 1)  # Rotate to face outward
-        glScalef(1, 0.5, 3)
-        glutSolidCube(15)
-        glPopMatrix()
-
-    glPushMatrix()
-    glColor3f(161/255, 115/255, 55/255)
-    glTranslatef(x -40, y + 0, 0)
-    glRotatef(-90, 0, 1, 0)
-    gluCylinder(gluNewQuadric(), 17,25, 10, 20, 20)
-    glPopMatrix()
-    
-    glPushMatrix()
-    glColor3f(161/255, 115/255, 55/255)
-    glTranslatef(x +50, y + 0, 0)
-    glRotatef(-90, 0, 1, 0)
-    gluCylinder(gluNewQuadric(), 25, 17, 10, 20, 20)
-    glPopMatrix()
-
-def draw_energy_tower(x, y):
-    glPushMatrix()
-    glTranslatef(x, y, 0)
-    glColor3f(0.4, 0.4, 0.4)
-    gluCylinder(gluNewQuadric(), 30, 15, 20, 32, 32)  # Match base
-    glTranslatef(0, 0, 20)
-    glColor3f(0.4, 0.4, 0.4)
-    gluCylinder(gluNewQuadric(), 15, 15, 50, 32, 32)
-    glColor3f(1, 1, 0.3)
-    gluCylinder(gluNewQuadric(), 17, 17, 8, 30, 30)
-    glTranslatef(0, 0, 50)
-    glPushMatrix()
-    glColor3f(1, 1, 0.3)
-    for i in range(8):
-        glPushMatrix()
-        glRotatef(i * 45, 0, 0, 1)
-        glTranslatef(18, 0, 0)
-        glutSolidCube(7)
-        glPopMatrix()
-    glPopMatrix()
-    glPushMatrix()
-    glTranslatef(0, 0, -8)
-    glColor3f(0.3, 0.3, 0.3)
-    for i in range(8):
-        glPushMatrix()
-        glRotatef(i * 45, 0, 0, 1)
-        glTranslatef(18, 0, 8)
-        glRotatef(90, 0, 1, 0)
-        glutSolidCylinder(2, 20, 8, 8)
-        glPopMatrix()
-    glPopMatrix()
-    glPushMatrix()
-    glTranslatef(0, 0, 5)
-    glColor3f(1, 1, 0.3)
-    glutSolidSphere(8, 20, 20)  
-    glPopMatrix()
-    glPopMatrix()
 
 def draw_fire_tower(x, y):
     glPushMatrix()
     glTranslatef(x, y, 0)
     glColor3f(0.4, 0.4, 0.4)
-    gluCylinder(gluNewQuadric(), 17, 14, 50, 30, 30)
+    gluCylinder(gluNewQuadric(), 30, 14, 100, 30, 30)
     glColor3f(1, 0.2, 0.1)
-    gluCylinder(gluNewQuadric(), 18, 18, 4, 20, 20)
-    glTranslatef(0, 0, 14)
-    gluCylinder(gluNewQuadric(), 17, 17, 4, 20, 20)
-    glTranslatef(0, 0, 14)
-    gluCylinder(gluNewQuadric(), 16, 16, 4, 20, 20)
-    glTranslatef(0, 0, 14)
-    gluCylinder(gluNewQuadric(), 15, 15, 4, 20, 20)
+    a = 35
+    for i in range(7):
+        glPushMatrix()
+        glTranslatef(0, 0, i * 16)
+        glRotatef(20, 0, 1, 0)
+        glRotatef(90, 0, 0, 1)
+        gluCylinder(gluNewQuadric(), a, a, 5, 20, 20)
+        glPopMatrix()
+        a -= 3
     glPopMatrix()
     glPushMatrix()
-    glTranslatef(x, y, 50)
+    glTranslatef(x, y, 105)
     glColor3f(0.3, 0.3, 0.3)
-    for i in range(6):
+    for i in range(8):
         glPushMatrix()
-        glRotatef(i * 60, 0, 0, 1)
-        glTranslatef(8, 0, 0) 
-        glutSolidCube(6)
+        glRotatef(i * 45, 0, 0, 1)
+        glTranslatef(10, 0, 0) 
+        glutSolidCube(8)
         glPopMatrix()
     glColor3f(0.4, 0.4, 0.4)
-    gluCylinder(gluNewQuadric(), 5, 2, 10, 30, 30)
-    glTranslatef(0, 0, 12)
+    gluCylinder(gluNewQuadric(), 8, 2, 15, 30, 30)
+    glTranslatef(0, 0, 18)
     glColor3f(1, 0.2, 0.1)
-    glutSolidSphere(5, 20, 20)
-    glTranslatef(2, 0, 1)
-    glRotatef(90, 0, 1, 0)
-    glColor3f(0.4, 0.4, 0.4)
-    gluCylinder(gluNewQuadric(), 2, 1, 25, 10, 10)
+    glutSolidSphere(9, 20, 20)
+    for i in range(8):
+        glPushMatrix()
+        glRotatef(i * 90, 0, 0, 1)
+        glTranslatef(6, 0, 0)
+        glRotatef(90, 0, 1, 0)
+        glColor3f(0.4, 0.4, 0.4)
+        gluCylinder(gluNewQuadric(), 4, 1, 30, 10, 10)
+        glPopMatrix()
     glPopMatrix()
 
 def draw_ice_tower(x, y):
@@ -313,74 +194,36 @@ def draw_ice_tower(x, y):
     glTranslatef(x, y, 0)
     glPushMatrix()
     glColor3f(0.6, 0.6, 0.6)
-    glScalef(1.0, 1.0, 5.0)
-    glutSolidCube(18)
+    glScalef(1.3, 1.3, 4.7)
+    glutSolidCube(40)
     glPopMatrix()
-    pillar_positions = [(10, 10),(-10, 10),(-10, -10),(10, -10)]
+    pillar_positions = [(22, 22),(-22, 22),(-22, -22),(22, -22)]
     for (px, py) in pillar_positions:
         glPushMatrix()
         glTranslatef(px, py, 0)
-        glScalef(0.2, 0.2, 5)
+        glScalef(0.5, 0.5, 9)
         glColor3f(0.5, 0.8, 1.0)
-        glutSolidCube(20)
+        glutSolidCube(25)
         glPopMatrix()
-    pillar_positions = [(10, 0),(-10, 0),(0, 10),(0, -10)]
+    pillar_positions = [(24, 0),(-24, 0),(0, 24),(0, -24)]
     for (px, py) in pillar_positions:
         glPushMatrix()
         glTranslatef(px, py, 0)
-        glScalef(0.15, 0.15, 4.5)
+        glScalef(0.5, 0.5, 8.5)
         glColor3f(0.7, 0.9, 1.0)
-        glutSolidCube(20)
+        glutSolidCube(25)
         glPopMatrix()
     for i in range(8):
         glPushMatrix()
         glRotatef(i * 45, 0, 0, 1)
-        glTranslatef(12, 0, 50)
+        glTranslatef(26, 0, 120)
+        glRotatef(90, 0, 1, 0)
         glColor3f(0.7, 0.95, 1.0)
-        glutSolidCube(5)
+        glutSolidCone(7, 20, 20, 20)
         glPopMatrix()
-    glTranslatef(0, 0, 54)
-    glColor3f(0.7, 0.9, 1)
-    glutSolidSphere(6, 20, 20)
-    glPopMatrix()
-
-
-def draw_enemy(x, z, health_percent, size=20):
-    glPushMatrix()
-    # Base color based on health
-    glColor3f(1, health_percent, health_percent)
-    glTranslatef(x, size/2, z)
-    glutSolidCube(size)
-    
-    # Health bar
-    glPushMatrix()
-    glColor3f(1, 0, 0)
-    glTranslatef(0, size, 0)
-    glScalef(size, 1, 1)
-    glutSolidCube(1)
-    
-    glColor3f(0, 1, 0)
-    glTranslatef(0, 0.1, 0)
-    glScalef(health_percent, 1, 1)
-    glutSolidCube(1)
-    glPopMatrix()
-    
-    glPopMatrix()
-
-def draw_bullet(x, z, bullet_type):
-    glPushMatrix()
-    if bullet_type == 0:  # Basic
-        glColor3f(1, 1, 0)
-        glTranslatef(x, 10, z)
-        glutSolidSphere(5, 10, 10)
-    elif bullet_type == 1:  # Assault
-        glColor3f(1, 0.5, 0)
-        glTranslatef(x, 10, z)
-        glutSolidSphere(8, 10, 10)
-    else:  # Rocket
-        glColor3f(1, 0, 0)
-        glTranslatef(x, 10, z)
-        glutSolidSphere(12, 10, 10)
+    glTranslatef(0, 0, 120)
+    glColor3f(0.5, 0.8, 1)
+    glutSolidSphere(13, 20, 20)
     glPopMatrix()
 
 def draw_center_tower():
@@ -650,123 +493,6 @@ def update_game():
     # Check game over
     if game_state['health'] <= 0:
         game_state['game_over'] = True
-
-def draw_text(x, y, text, font=GLUT_BITMAP_HELVETICA_18):
-    glColor3f(1,1,1)
-    glMatrixMode(GL_PROJECTION)
-    glPushMatrix()
-    glLoadIdentity()
-    gluOrtho2D(0, 1000, 0, 800)
-    glMatrixMode(GL_MODELVIEW)
-    glPushMatrix()
-    glLoadIdentity()
-    glRasterPos2f(x, y)
-    for ch in text:
-        glutBitmapCharacter(font, ord(ch))
-    glPopMatrix()
-    glMatrixMode(GL_PROJECTION)
-    glPopMatrix()
-    glMatrixMode(GL_MODELVIEW)
-
-
-
-def draw_trees(x,y):
-    glPushMatrix()
-    glColor3f(50/255, 70/255, 46/255)
-    glTranslatef(x,y, 0)
-    gluCylinder(gluNewQuadric(), 30, 2, 50, 10, 10)
-    glPopMatrix()
-    
-    glPushMatrix()
-    glColor3f(50/255, 70/255, 46/255)
-    glTranslatef(x, y, 10)
-    gluCylinder(gluNewQuadric(), 30, 2, 50, 10, 10)
-    glPopMatrix()
-    
-    glPushMatrix()
-    glColor3f(50/255, 70/255, 46/255)
-    glTranslatef(x, y, 23)
-    gluCylinder(gluNewQuadric(), 30, 2, 50, 10, 10)
-    glPopMatrix()
-def draw_rocks(x,y):
-    
-    glPushMatrix()
-    glTranslatef(x, y, 0)
-    glColor3f(178/255, 181/255, 177/255)
-    glScalef(2,2,1)
-    glutSolidCube(30)
-    glPopMatrix()
-    
-
-    
-    glPushMatrix()
-    glTranslatef(x, y, 2)
-    glColor3f(99/255, 102/255, 98/255)
-    glutSolidCube(40)
-    glPopMatrix()
-    
-    glPushMatrix()
-    glTranslatef(x,y,15)
-    glColor3f(178/255, 181/255, 177/255)
-    glutSolidCube(20)
-    glPopMatrix()
-
-
-def enemy1(x,y):
-    # body
-    glPushMatrix()
-    glColor3f(10/255, 101/255, 34/255)
-    glTranslatef(x,y,35)
-    glutSolidSphere(40, 20, 20)
-    glPopMatrix()
-    
-    # head
-    glPushMatrix()
-    glColor3f(20/255, 125/255, 48/255)
-    glTranslatef(x,y-18, 72)
-    glutSolidSphere(22, 20, 20)
-    glPopMatrix()
-    
-    # hands
-    glPushMatrix()
-    glColor3f(20/255, 125/255, 48/255)
-    glTranslatef(x+35,y,35)
-    glRotatef(180, 1, 0, 0)
-    gluCylinder(gluNewQuadric(), 22, 7, 52, 10, 10)
-    glPopMatrix()
-    
-    glPushMatrix()
-    glColor3f(20/255, 125/255, 48/255)
-    glTranslatef(x-35,y,35)
-    glRotatef(180, 1, 0, 0)
-    gluCylinder(gluNewQuadric(), 22,6, 52, 10, 10)
-    glPopMatrix()
-    
-    
-    # eyes
-    glPushMatrix()
-    glColor3f(0, 0, 0)
-    glTranslatef(x+5,y-36,72)
-    glutSolidSphere(5, 10, 10)
-    glPopMatrix()
-    
-    glPushMatrix()
-    glColor3f(0, 0, 0)
-    glTranslatef(x-5,y-36,72)
-    glutSolidSphere(5, 10, 10)
-    glPopMatrix()
-def mountain(x,y,z):
-    glPushMatrix()
-    glTranslatef(x,y,z)
-    glColor3f(125/255, 109/255, 79/255)
-    glutSolidCube(40)
-    glPopMatrix()
-    
-    glPushMatrix()
-    glTranslatef(x,y,z+8)
-    glColor3f(67/255, 94/255, 54/255)  # Grass color
-    glutSolidCube(40)
-    glPopMatrix()  
   
 def showScreen():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -774,33 +500,9 @@ def showScreen():
     glViewport(0, 0, 1000, 800)
     
     setupCamera()
-    draw_trees(-500,-300)
-    draw_trees(-600,500)
-    draw_trees(-400,100)
-    draw_trees(-500,300)
-    draw_trees(-200,200)
-    draw_trees(100,-300)
-    draw_trees(200,-200)
-    draw_trees(200,200)
-    draw_trees(-100,100)
-    
-    draw_rocks(200,-100)
-    draw_rocks(-500,-100)
-    draw_rocks(200,300)
-    draw_tower(0,-400)
-    draw_energy_tower(100, 200)
     draw_fire_tower(-200, 100)
     draw_ice_tower(-200, -100)
     
-    mountain(100,100,0)
-    mountain(105,105,23)
-    mountain(80,90,0)
-    mountain(120,120,0)
-    mountain(150,110,0)
-    mountain(100,140,-10)
-    
-    
-    enemy1(200,-280)
     # Draw ground
     glBegin(GL_QUADS)
     glColor3f(121/255, 166/255, 110/255)  # Grass color
@@ -815,30 +517,6 @@ def showScreen():
     draw_paths()
     # Draw center tower
     draw_center_tower()
-    
-    # # Draw towers
-    # for tower in game_state['towers']:
-    #     draw_tower1(tower.x, tower.z, tower.color)
-    
-    # # Draw enemies
-    # for enemy in game_state['enemies']:
-    #     draw_enemy(enemy.x, enemy.z, enemy.health / enemy.max_health)
-    
-    # # Draw bullets
-    # for bullet in game_state['bullets']:
-    #     draw_bullet(bullet['x'], bullet['z'], bullet['type'])
-    
-    # Draw UI
-    draw_text(10, 770, f"Coins: {game_state['coins']}")
-    draw_text(10, 740, f"Wave: {game_state['wave']}")
-    draw_text(10, 710, f"Health: {game_state['health']}")
-    draw_text(10, 680, f"Towers: {len(game_state['towers'])}")
-    draw_text(10, 650, f"Selected: {'Basic' if game_state['selected_tower_type'] == 0 else 'Assault' if game_state['selected_tower_type'] == 1 else 'Rocket'} (1/2/3)")
-    draw_text(10, 620, f"Place: Space | Upgrade: U")
-    
-    if game_state['game_over']:
-        draw_text(400, 400, "GAME OVER - Press R to restart", GLUT_BITMAP_TIMES_ROMAN_24)
-    
     glutSwapBuffers()
 
 def idle():
