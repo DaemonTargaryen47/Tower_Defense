@@ -25,6 +25,7 @@ game_state = {
     'bullets': [],
     'road_paths': [],
     'selected_tower_type': 0,  # 0=cannon, 1=slow, 2=Energy,3=Fire,4=Ice
+    'select_enemy_type':0,
     'game_over': False,
     'is_slowed': False,
     'spawn_timer': 0,
@@ -40,6 +41,8 @@ camera_angle_x = 45
 camera_angle_y = 0
 camera_distance = 500
 fovY = 120
+
+
 
 path1 = [
     (700, 0), (0, 0),(0,-300),(-300,-300),(-300, 0), (-300, 500), (200, 500)
@@ -153,22 +156,23 @@ class Tower:
 class Enemy:
     def __init__(self):
         self.path =random.choice(all_paths[:game_state['active_roads']])  # Use path1 for all enemies
-
         self.current_waypoint = 0 
-        self.type= random.randint(0,2)# 0: normal, 1: fast, 2: tank
+        self.type= 0  #0 for normal enemy 1 for boss enemey
         self.x, self.z = self.path[0]  # Start at first waypoint
-        self.base_speed = [0.3, 0.4, 0.2][self.type]
+        self.base_speed = [0.4, 0.1][self.type]
         self.speed =self.base_speed 
-        self.scale = [0.5, 0.4, 0.7][self.type]
-        self.color = [(10/255, 101/255, 34/255), (0, 1, 0), (0, 0, 1)][self.type]
+        # self.scale = [0.5, 0.4, 0.7][self.type]
+        # self.color = [(10/255, 101/255, 34/255), (0, 1, 0), (0, 0, 1)][self.type]
         self.rotation = 0  # Y-axis rotation in degrees
-        self.health = [100, 80, 150][self.type]
+        self.health = [100,250][self.type]
         self.hand_phase = 0.0  # Controls hand animation
         self.alive = True
         self.size = 20  # For collision detection
         self.max_health = self.health
+        self.is_boss=False
         self.is_slowed = False
-        self.is_frozen= True
+        self.is_burn=False
+        self.is_frozen= False
         self.freeze_end_time=0
         self.burn_damage = 0
         self.burn_end_time=0
@@ -220,12 +224,22 @@ class Enemy:
         
         if self.is_frozen and current_time<self.freeze_end_time:
             return True
+        
+        if self.is_frozen and current_time>=self.freeze_end_time:
+            return False
+        
+        if self.is_burn and current_time >= self.burn_end_time:
+            self.is_burn = False
+            self.burn_damage = 0
         # Move toward next waypoint
         if self.burn_damage > 0 and current_time < self.burn_end_time:
             self.health -= self.burn_damage * 0.016  # Approx 60 FPS
             if self.health <= 0:
                 self.alive = False
                 return False
+        elif current_time >= self.burn_end_time:
+            self.is_burn = False
+            
         target_x, target_z = self.path[self.current_waypoint + 1]
         dx = target_x - self.x
         dz = target_z - self.z
@@ -253,19 +267,27 @@ class Enemy:
         self.hand_phase = (self.hand_phase + self.speed * 0.01) % 1.0
         return True
 
-def enemy1(x, y, enemy_angle, hand_phase,color,scale,is_slowed=False,is_frozen=False):
+def enemy1(x, y, enemy_angle, hand_phase,is_slowed=False,is_frozen=False,is_burn=False,is_boss=False):
     glPushMatrix()
     glTranslatef(x, y, 25)
-    glScalef(scale, scale, scale)
+    if is_boss:
+        glScalef(0.7, 0.7, 0.7)
+    else:
+        glScalef(0.4,0.4,0.4)
     glRotatef(enemy_angle, 0, 0, 1)
+    
     
     glPushMatrix()
     if is_frozen:
         glColor3f(0.5, 0.5, 1)
     elif is_slowed:
         glColor3f(0.5, 0.5, 0.7)
+    elif is_boss:
+        glColor3f(0,0,0)
+    elif is_burn:
+        glColor3f(1, 0.2, 0.1)
     else:
-        glColor3f(*color)
+        glColor3f(10/255, 101/255, 34/255)
     glutSolidSphere(40, 20, 20)
     glPopMatrix()
     
@@ -307,8 +329,13 @@ def enemy1(x, y, enemy_angle, hand_phase,color,scale,is_slowed=False,is_frozen=F
     
     glPopMatrix()
 
+
+
+
 def init_game():
     game_state['road_paths'] = [path1, path2, path3]
+
+
 
 
 # Energy_Tower
@@ -567,78 +594,80 @@ def Cannon_tower(x,y):
 def Fire_tower(x,y):
     glPushMatrix()
     glTranslatef(x, y, 0)
-    glScalef(1.8,1.8,1.8)
     glColor3f(0.4, 0.4, 0.4)
-    gluCylinder(gluNewQuadric(), 17, 14, 50, 30, 30)
+    gluCylinder(gluNewQuadric(), 30, 14, 100, 30, 30)
     glColor3f(1, 0.2, 0.1)
-    gluCylinder(gluNewQuadric(), 18, 18, 4, 20, 20)
-    glTranslatef(0, 0, 14)
-    gluCylinder(gluNewQuadric(), 17, 17, 4, 20, 20)
-    glTranslatef(0, 0, 14)
-    gluCylinder(gluNewQuadric(), 16, 16, 4, 20, 20)
-    glTranslatef(0, 0, 14)
-    gluCylinder(gluNewQuadric(), 15, 15, 4, 20, 20)
+    a = 35
+    for i in range(7):
+        glPushMatrix()
+        glTranslatef(0, 0, i * 16)
+        glRotatef(20, 0, 1, 0)
+        glRotatef(90, 0, 0, 1)
+        gluCylinder(gluNewQuadric(), a, a, 5, 20, 20)
+        glPopMatrix()
+        a -= 3
     glPopMatrix()
     glPushMatrix()
-    glTranslatef(x, y, 50)
+    glTranslatef(x, y, 105)
     glColor3f(0.3, 0.3, 0.3)
-    for i in range(6):
+    for i in range(8):
         glPushMatrix()
-        glRotatef(i * 60, 0, 0, 1)
-        glTranslatef(10, 0, 25) 
-        glScalef(4,1,1)
+        glRotatef(i * 45, 0, 0, 1)
+        glTranslatef(10, 0, 0) 
         glutSolidCube(8)
         glPopMatrix()
     glColor3f(0.4, 0.4, 0.4)
-    gluCylinder(gluNewQuadric(), 5, 2, 10, 30, 30)
-    glTranslatef(0, 0, 42)   
+    gluCylinder(gluNewQuadric(), 8, 2, 15, 30, 30)
+    glTranslatef(0, 0, 18)
     glColor3f(1, 0.2, 0.1)
-    glutSolidSphere(10, 20, 20)
-    
-    # glTranslatef(2, 0, 1)
-    # glRotatef(90, 0, 1, 0)    
-    # glColor3f(0.4, 0.4, 0.4)
-    # gluCylinder(gluNewQuadric(), 2, 1, 25, 10, 10)
+    glutSolidSphere(9, 20, 20)
+    for i in range(8):
+        glPushMatrix()
+        glRotatef(i * 90, 0, 0, 1)
+        glTranslatef(6, 0, 0)
+        glRotatef(90, 0, 1, 0)
+        glColor3f(0.4, 0.4, 0.4)
+        gluCylinder(gluNewQuadric(), 4, 1, 30, 10, 10)
+        glPopMatrix()
     glPopMatrix()
 # Ice Tower
 def Ice_tower(x,y):
     glPushMatrix()
     glTranslatef(x, y, 0)
-    glScalef(1.6,1.6,1.6)
     glPushMatrix()
     glColor3f(0.6, 0.6, 0.6)
-    glScalef(1.0, 1.0, 5.0)
-    glutSolidCube(18)
+    glScalef(1.3, 1.3, 4.7)
+    glutSolidCube(40)
     glPopMatrix()
-    pillar_positions = [(10, 10),(-10, 10),(-10, -10),(10, -10)]
+    pillar_positions = [(22, 22),(-22, 22),(-22, -22),(22, -22)]
     for (px, py) in pillar_positions:
         glPushMatrix()
         glTranslatef(px, py, 0)
-        glScalef(0.2, 0.2, 5)
+        glScalef(0.5, 0.5, 9)
         glColor3f(0.5, 0.8, 1.0)
-        glutSolidCube(20)
+        glutSolidCube(25)
         glPopMatrix()
-    pillar_positions = [(10, 0),(-10, 0),(0, 10),(0, -10)]
+    pillar_positions = [(24, 0),(-24, 0),(0, 24),(0, -24)]
     for (px, py) in pillar_positions:
         glPushMatrix()
         glTranslatef(px, py, 0)
-        glScalef(0.15, 0.15, 4.5)
+        glScalef(0.5, 0.5, 8.5)
         glColor3f(0.7, 0.9, 1.0)
-        glutSolidCube(20)
+        glutSolidCube(25)
         glPopMatrix()
     for i in range(8):
         glPushMatrix()
         glRotatef(i * 45, 0, 0, 1)
-        glTranslatef(12, 0, 50)
+        glTranslatef(26, 0, 120)
+        glRotatef(90, 0, 1, 0)
         glColor3f(0.7, 0.95, 1.0)
-        glutSolidCube(5)
+        glutSolidCone(7, 20, 20, 20)
         glPopMatrix()
-        
-    glTranslatef(0, 0, 54)
-    # glColor3f(0.7, 0.9, 1)
-    glColor3f(69/255, 151/255, 235/255)
-    glutSolidSphere(6, 20, 20)
+    glTranslatef(0, 0, 120)
+    glColor3f(0.5, 0.8, 1)
+    glutSolidSphere(13, 20, 20)
     glPopMatrix()
+
     
     
 
@@ -955,7 +984,8 @@ def update_game():
                 dist = math.sqrt((bullet['x'] - enemy.x)**2 + (bullet['z'] - enemy.z)**2)
                 if dist < enemy.size:
                     enemy.health -= bullet['damage']
-                    enemy.burn_damage = 5
+                    enemy.is_burn=True
+                    enemy.burn_damage = 50
                     enemy.burn_end_time = current_time + 3.0
                     hit = True
                     break
@@ -1174,7 +1204,7 @@ def showScreen():
     draw_center_tower(200, 500)
     
     for enemy in game_state['enemies']:
-        enemy1(enemy.x, enemy.z, enemy.rotation, enemy.hand_phase, enemy.color, enemy.scale,enemy.is_slowed,enemy.is_frozen)
+        enemy1(enemy.x, enemy.z, enemy.rotation, enemy.hand_phase,enemy.is_slowed,enemy.is_frozen,enemy.is_boss)
     
     for tower in game_state['towers']:
         if tower.type == 0:
