@@ -136,6 +136,64 @@ class Enemy:
         
         return True
 
+def enemy2(x,y):
+    # body
+    glPushMatrix()
+    glColor3f(10/255, 101/255, 34/255)
+    glTranslatef(x,y,55)
+    glScalef(0.7, 0.5, 1.2)
+    glutSolidCube(40)
+    glPopMatrix()
+    # head
+    glPushMatrix()
+    glColor3f(20/255, 125/255, 48/255)
+    glTranslatef(x,y,92)
+    glutSolidSphere(14, 20, 20)
+    glPopMatrix()
+    # hands
+    glPushMatrix()
+    glColor3f(20/255, 125/255, 48/255)
+    glTranslatef(x+18,y,72)
+    glRotatef(180, 1, 0, 0)
+    gluCylinder(gluNewQuadric(), 4, 1, 30, 10, 10)
+    glTranslatef(-2,0,0)
+    glutSolidSphere(6, 20, 20)
+    glPopMatrix()
+    glPushMatrix()
+    glColor3f(20/255, 125/255, 48/255)
+    glTranslatef(x-18,y,72)
+    glRotatef(180, 1, 0, 0)
+    gluCylinder(gluNewQuadric(), 4, 1, 30, 10, 10)
+    glTranslatef(2,0,0)
+    glutSolidSphere(6, 20, 20)
+    glPopMatrix()
+    # legs
+    glPushMatrix()
+    glColor3f(20/255, 125/255, 48/255)
+    glTranslatef(x+10,y-5,45)
+    glRotatef(180, 1, 0, 0)
+    gluCylinder(gluNewQuadric(), 9, 2, 45, 10, 10)
+    glutSolidSphere(9, 20, 20)
+    glPopMatrix()
+    glPushMatrix()
+    glColor3f(20/255, 125/255, 48/255)
+    glTranslatef(x-10,y-5,45)
+    glRotatef(180, 1, 0, 0)
+    gluCylinder(gluNewQuadric(), 9, 2, 45, 10, 10)
+    glutSolidSphere(9, 20, 20)
+    glPopMatrix()
+    # eyes
+    glPushMatrix()
+    glColor3f(0, 0, 0)
+    glTranslatef(x+5,y-10,94)
+    glutSolidSphere(5, 10, 10)
+    glPopMatrix()
+    glPushMatrix()
+    glColor3f(0, 0, 0)
+    glTranslatef(x-5,y-10,94)
+    glutSolidSphere(5, 10, 10)
+    glPopMatrix()
+
 def init_game():
     game_state['road_paths'] = [
         # Path 1 (top-left to center) - zigzag
