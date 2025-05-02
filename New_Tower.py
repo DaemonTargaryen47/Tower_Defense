@@ -37,7 +37,7 @@ fovY = 120
 
 # Define path waypoints (3 separate paths)
 path1 = [
-    (-300, -700), (-300, 0),(-300,500),(200, 500), (200,250)
+    (-300, -700), (-300, 0),(-300,300),(200, 300)
 ]
 path2 =[
     (-700,0),(-300, 0)
@@ -347,7 +347,7 @@ def draw_center_tower():
     # glColor3f(0.5, 0.5, 1)
     # glTranslatef(0, 0, 0)
     # glutSolidCube(80)
-    glTranslatef(200,250,0)
+    glTranslatef(200,300,0)
     # # Health indicator
     # health_percent = game_state['health'] / 100.0
     glBegin(GL_LINES)
